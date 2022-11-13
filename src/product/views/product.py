@@ -28,8 +28,8 @@ def ProductListFilter(request):
     product_data = Product.objects.all()
     # producted = Product.objects.all().prefetch_related('productvariantprice_set')
     variant = Variant.objects.all()
-    variant_data = ProductVariant.objects.order_by().values('variant_title').distinct()#for dropdown filter
-   
+    variant_data = ProductVariant.objects.all()#values('variant_title').distinct()#for dropdown filter #for postgresql only distinct
+    #print(variant_data)
     product_variant_data = ProductVariantPrice.objects.all()
     product_image = ProductImage.objects.all()
     
@@ -78,6 +78,8 @@ def ProductFilter(request):
     final_data = final_data.filter(product__title__icontains = value)
     final_data = final_data.filter(price__gte = price_start)
     final_data = final_data.filter(price__lte = price_finish)
+    #final_data = final_data.filter(product_variant_one__variant_title = variant).filter(product_variant_two__variant_title = variant).filter(product_variant_three__variant_title = variant)
+   
 
    
     

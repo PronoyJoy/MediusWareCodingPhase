@@ -22,7 +22,7 @@
 
 
 
-<div class="container">
+<div class="container-fluid">
 
     <form method='get' action= {% url 'product:filter' %}>
 
@@ -49,10 +49,19 @@
                   {% for i in variant %}
               
                     <optgroup label="{{ i.title }}">
+
+                      
               
                       {% for variant in variant_data  %}
+
+                          {% if i.title == variant.variant.title %}
+
+                          <option name= 'variant' value="{{ variant.variant_title }} "> {{ variant.variant_title }} </option>
+                          
+                          
+                          {% endif %}
               
-                              <option name= 'variant' value="{{ variant.variant_title }} "> {{ variant.variant_title }} </option>
+                              
                      
                       
                       {% endfor %}
@@ -120,7 +129,7 @@
 
 <hr> <hr> 
   
-<div class="container">
+<div class="container-fluid">
     <div class="row">
 
 
@@ -251,27 +260,24 @@
  
       
 
-      {% if i.product.title == p.title %}
-
-      
-      {% if  i.stock > 0 %}
-
-      <p> InStock: {{ i.stock }} </p> 
-
-      {% else %}
-
-      <p> Out Of Stock </p>
-
-      
-      {% endif %}
+        {% if i.product.title == p.title %}
 
 
-         
+             {% if i.stock > 0 %}
 
+             InStock: {{ i.stock }} <br>
 
-      
-      {% endif %}
-      
+             {% else %}
+
+             Out Of Stock
+             
+             {% endif %}
+
+        
+              
+        
+        {% endif %}
+        
       
       
       {% endfor %}
