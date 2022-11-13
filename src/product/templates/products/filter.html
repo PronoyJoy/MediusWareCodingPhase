@@ -18,9 +18,41 @@
     <link rel="stylesheet" href="{% static 'css\main.css' %}">
 </head>
 <body class="bg-gradient-primary">
-{% block content %}
+    <h1> Product List </h1> 
 
-{% endblock %}
+
+
+
+
+
+
+
+<h2> Title Description Variant Price </h2> 
+
+
+
+{% if final_data != None%}
+
+{% for product in final_data %} 
+
+{{ product.price }}
+
+{% endfor %}  
+
+{% else %}
+
+No data
+
+
+{% endif %}
+
+
+
+
 
 </body>
 </html>
+
+
+
+

@@ -1,19 +1,391 @@
-{% extends 'backend/base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Product List </title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.bundle.min.js"></script>
+</head>
+<body>
 
-{% block title %} Product List {% endblock %}
+<div class="jumbotron text-center">
+  <h1>Product List And Filter</h1>
+ 
+</div>
 
-{% block content %}
 
-{% for product in products %}
 
-<div>
-<h1>
-    {{ product.title }}
-</h2>
+<div class="container">
+
+    <form method='get' action= {% url 'product:filter' %}>
+
+
+        <div class="form-row">
+
+
+            <div class="col">
+
+                <label for="title">Product Title:</label><br>
+                <input type="text" id="title" name="title"><br>
+            
+            </div>
+
+
+            <div class="col">
+
+
+                <label for="variant">Variant: </label><br>
+
+                <select id="variant" name="variant">
+
+                {% for variant in variant_data  %}
+
+                <option name= 'variant' value="{{ variant.variant_title }} "> {{ variant.variant_title }} </option>
+
+                {% endfor %}
+   
+                </select>
+              
+            </div>
+
+            
+
+
+            <div class="col">
+                <label for="price_start">Price Range : From</label><br>
+
+                <input type="text" id="price_start" name="price_start" placeholder='from'>
+              
+            </div>
+
+           
+           
+            <div class="col">
+
+                <label for="price_finish">To</label><br>
+
+                <input type="text" id="price_finish" name="price_finish"placeholder='to'>
+              
+            </div>
+
+            <div class="col">
+
+               
+              
+                <label for="date">Enter a date :</label>
+                <input type="date" id="date" name="date">
+
+
+            </div>
+        
+            <div class="col">
+
+                <label for="search">Search Here:</label> <br>
+
+                <input type="submit" value="search" name="search" id="search">
+              
+            </div>
+        
+            
+        
+    
+        
+        </div>
+    
+    
+    </form>
+
+
 
 </div>
 
 
+
+<hr> <hr> 
+  
+<div class="container">
+    <div class="row">
+
+
+        <div class="col">
+            
+          <p> #  </p>
+         
+        </div>
     
-{% endfor %}
-{% endblock %}
+    
+        <div class="col">
+          <h3>  Title </h3>
+          
+        </div>
+    
+    
+        <div class="col">
+          <h3> Description </h3>        
+        
+        </div>
+    
+        <div class="col">
+            <h3>Variant </h3>        
+          
+        </div>
+    
+        <div class="col">
+            <h3> </h3>        
+          
+        </div>
+
+        <div class="col">
+            <h3> </h3>        
+          
+        </div>
+    
+        <div class="col">
+            <h3>Action</h3>        
+          
+        </div>
+    </div>
+<hr> <hr>
+
+    {% for product in page_obj %}
+
+  <div class="row">
+
+
+    <div class="col">
+
+      <p> {{ product.pk }} </p>
+     
+    </div>
+
+
+    <div class="col">
+      
+        <p> {{ product.product.title }} </p>
+      
+    </div>
+
+
+    <div class="col">
+      <p> {{ product.product.description }}      </p>
+    
+    </div>
+
+    <div class="col">
+        <p> {{ product.product_variant_one }}  / {{ product.product_variant_one }} / {{ product.product_variant_one }}    </p>
+      
+    </div>
+
+    <div class="col">
+       <p> Price : {{product.price}} </p>     
+      
+    </div>
+
+    <div class="col">
+        {% if  product.stock > 0 %}
+
+        <p> InStock: {{ product.stock }} </p> 
+
+        {% else %}
+
+        <p> Out Of Stock </p>
+
+        
+        {% endif %}
+            
+      
+    </div>
+
+    <div class="col">
+        <button type="button" class="btn btn-success">Edit</button>        
+      
+    </div>
+
+
+
+  </div>
+
+
+  {% endfor %}
+
+
+</div>
+
+
+
+{% comment %} <nav aria-label="Page navigation example">
+    <ul class="pagination">
+
+        {% if page_obj.has_previous %}
+
+        <li class="page-item"><a class="page-link" href="?page=1">First</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+
+        {% endif %}
+
+
+        
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.number }}"> {{page_obj.number}} </a></li>
+
+        {% if page_obj.has_next %}
+
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Last</a></li>
+
+    
+        {% endif %}
+     
+     
+      
+      
+    </ul>
+  </nav> {% endcomment %}
+
+
+
+
+
+<div class='mx-auto' style= "width: 200px;" >
+ {% if page_obj.has_other_pages %}
+  <nav aria-label="Page navigation example">
+  <ul class="pagination">
+    {% if page_obj.has_previous %}
+      <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&laquo;</span></li>
+    {% endif %}
+    {% for i in page_obj.paginator.page_range %}
+      {% if page_obj.number == i %}
+        <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li><a href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if page_obj.has_next %}
+      <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+    {% else %}
+      <li class="disabled"><span>&raquo;</span></li>
+    {% endif %}
+</ul>
+</nav>
+
+{% endif %} 
+
+
+</div>
+
+<div class='mx-auto' style= "width: 500px;" >
+
+    <h2>Showing<h2>
+
+        {% for p in page_obj %}
+        
+         {{ p.pk }} to
+        
+        {% endfor %}
+
+        Out Of  {{ number_of_products }}
+    
+</div> 
+
+
+
+
+
+
+
+
+
+
+</body>
+</html>
+
+
+
+
+{% comment %} <html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>
+        {% block title %}
+            Home
+        {% endblock %}-Mediusware
+    </title>
+    <!-- Custom fonts for this template-->
+    <link
+            href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+            rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css\main.css' %}">
+</head>
+<body class="bg-gradient-primary">
+    <h1> Product List </h1> 
+
+
+
+{% comment %} <form>
+    <label for="title">Product Title:</label><br>
+    <input type="text" id="title" name="title"><br>
+
+    <label for="variant">Variant</label><br>
+    <input type="text" id="variant" name="variant">
+
+    
+
+    
+    </div>
+
+
+</form> {% endcomment %}
+
+
+
+
+
+
+
+
+{% comment %} {{ number_of_products }}  {% endcomment %}
+{% comment %} {% for product in product_data %}
+
+{{ product.title }} <hr>
+
+{% endfor %} {% endcomment %}
+
+{% comment %} {% for variants in variant_data %}
+
+{{ variants.variant_title }} 
+
+{% endfor %} {% endcomment %}
+
+{% comment %} 
+ {% for variant in variants %} #variant variantpricetable
+
+ <div>
+
+    {{ forloop.counter }} || {{ variant.product.title }}
+    || {{ variant.product.sku }}  || {{ variant.product.description }} 
+    || {{ variant.product_variant_one }}/{{ variant.product_variant_two }}/{{ variant.product_variant_three }} ||
+    {{ variant.price }} || stock: {{variant.stock }}
+    <br> <hr>
+    <hr>
+
+
+</div> 
+{% endfor %}   {% endcomment %}
+
+
+{% comment %} 
+
+</body>
+</html> {% endcomment %}
+
+
+
+
