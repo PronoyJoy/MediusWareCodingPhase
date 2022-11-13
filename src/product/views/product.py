@@ -52,18 +52,20 @@ def ProductListFilter(request):
 
                  )
 
+
+
+
 def ProductFilter(request):
-    title =request.GET.get('title')
-    variant =request.GET.get('variant')
-    price_start =request.GET.get('price_start')
-    price_finish =request.GET.get('price_finish')
-    date = request.GET.get('date')
+
+    if request.method == 'GET':
+        titles = request.GET.get('title')
+        variant =request.GET.get('variant')
+        price_start =request.GET.get('price_start')
+        price_finish =request.GET.get('price_finish')
+        date = request.GET.get('date')
 
 
-    filtered_data = ProductVariantPrice.objects.filter(product__title__contains = 'title')
-
-
-
+    final_data = ProductVariantPrice.objects.all().filter(product__title__contains ='title')
   
     # filter_variant_one = filter(filtered_data__product_variant_one__contains ='variant[]')
     # filter_variant_two = filter(filtered_data__product_variant_two__contains ='variant[]')

@@ -33,11 +33,13 @@
 
 {% if final_data != None%}
 
-{% for product in final_data %} 
 
-{{ product.price }}
+       {% for p in final_data %}
+       
+        {{p.product.title}}
 
-{% endfor %}  
+
+       {% endfor %}
 
 {% else %}
 
