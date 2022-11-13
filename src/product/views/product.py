@@ -3,6 +3,7 @@ from django.shortcuts import render,reverse
 from product.models import ProductImage,Variant,Product,ProductVariantPrice,ProductVariant
 from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect
+
 class CreateProductView(generic.TemplateView):
     template_name = 'products/create.html'
 
@@ -25,13 +26,16 @@ class PassVariant(generic.ListView):
 
 def ProductListFilter(request): 
     product_data = Product.objects.all()
-    variant_data = ProductVariant.objects.values('variant_title').distinct() #for dropdown filter
+    # producted = Product.objects.all().prefetch_related('productvariantprice_set')
+    variant = Variant.objects.all()
+    variant_data = ProductVariant.objects.order_by().values('variant_title').distinct()#for dropdown filter
+   
     product_variant_data = ProductVariantPrice.objects.all()
     product_image = ProductImage.objects.all()
     
-    number_of_products = ProductVariant.objects.count()
+    number_of_products = Product.objects.count()
 
-    paginator = Paginator(product_variant_data,2) # Show 25 contacts per page.
+    paginator = Paginator(product_data,2) # Show 25 contacts per page.
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -41,7 +45,9 @@ def ProductListFilter(request):
                     
                     {
                         'product_data': product_data,
+                        'variant' : variant,
                         'variant_data' : variant_data,
+                   
                         'product_variant_data': product_variant_data,
                         'product_image' : product_image,
                         'number_of_products' : number_of_products,
@@ -58,18 +64,36 @@ def ProductListFilter(request):
 def ProductFilter(request):
 
     if request.method == 'GET':
-        titles = request.GET.get('title')
-        variant =request.GET.get('variant')
-        price_start =request.GET.get('price_start')
-        price_finish =request.GET.get('price_finish')
-        date = request.GET.get('date')
+        value = request.GET.get('title')
+        variant = request.GET.get('variant')
+        price_start = request.GET.get('price_start')
+        price_finish = request.GET.get('price_finish')
+        
+    else:
+        return render(request,'products/filter.html')
 
+    
 
-    final_data = ProductVariantPrice.objects.all().filter(product__title__contains ='title')
+    final_data = ProductVariantPrice.objects.all()
+    final_data = final_data.filter(product__title__icontains = value)
+    final_data = final_data.filter(price__gte = price_start)
+    final_data = final_data.filter(price__lte = price_finish)
+
+   
+    
+    
+
+    
+    return render(request, 'products/filter.html',
+                    {
+                        'final_data':final_data,
+                    } 
+                  )
+
   
-    # filter_variant_one = filter(filtered_data__product_variant_one__contains ='variant[]')
-    # filter_variant_two = filter(filtered_data__product_variant_two__contains ='variant[]')
-    # filter_variant_three = filter(filtered_data__product_variant_three__contains ='variant[]')
+    # filter_variant_one = filter(filtered_data__product_variant_one__contains ='variant')
+    # filter_variant_two = filter(filtered_data__product_variant_two__contains ='variant')
+    # filter_variant_three = filter(filtered_data__product_variant_three__contains ='variant')
 
     # if filter_variant_one != None:
     #     filter_price1 = filter(filter_variant_one__price = [ price_start, price_finish])
@@ -93,15 +117,9 @@ def ProductFilter(request):
 
    
     
-    return render(request, 'products/filter.html',
-                    
-                    {
-                        'final_data': final_data,
-                    }
-
 
     
     
-                )
+        
 
 	

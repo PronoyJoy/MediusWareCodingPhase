@@ -19,15 +19,16 @@
 
 
 
+
+
+
 <div class="container">
 
     <form method='get' action= {% url 'product:filter' %}>
 
 
-        <div class="form-row">
-
-
-            <div class="col">
+      <div class="form-row">
+            <div class="col"> 
 
                 <label for="title">Product Title:</label><br>
                 <input type="text" id="title" name="title"><br>
@@ -35,19 +36,34 @@
             </div>
 
 
-            <div class="col">
+            <div class="col"> 
 
+
+                  
+                   
 
                 <label for="variant">Variant: </label><br>
+                <select name="variant" id="variant">
 
-                <select id="variant" name="variant">
 
-                {% for variant in variant_data  %}
-
-                <option name= 'variant' value="{{ variant.variant_title }} "> {{ variant.variant_title }} </option>
-
-                {% endfor %}
-   
+                  {% for i in variant %}
+              
+                    <optgroup label="{{ i.title }}">
+              
+                      {% for variant in variant_data  %}
+              
+                              <option name= 'variant' value="{{ variant.variant_title }} "> {{ variant.variant_title }} </option>
+                     
+                      
+                      {% endfor %}
+                     
+                    </optgroup>
+              
+                  {% endfor %}
+              
+               
+                
+              
                 </select>
               
             </div>
@@ -82,13 +98,10 @@
 
             </div>
         
-            <div class="col">
+            <button type="submit" value="Submit">Search</button>
 
-                <label for="search">Search Here:</label> <br>
-
-                <input type="submit" value="search" name="search" id="search">
               
-            </div>
+              
         
             
         
@@ -151,51 +164,119 @@
     </div>
 <hr> <hr>
 
-    {% for product in page_obj %}
+    {% for p in page_obj %}
 
   <div class="row">
 
 
     <div class="col">
 
-      <p> {{ product.pk }} </p>
+      <p> {{ p.pk }} </p>
      
     </div>
 
 
     <div class="col">
       
-        <p> {{ product.product.title }} </p>
+        <p> {{ p.title }} </p>
+
+        <p> {{p.created_at}} </p>
       
     </div>
 
 
     <div class="col">
-      <p> {{ product.product.description }}      </p>
+      <p> {{ p.description }}      </p>
     
     </div>
+    
+  
+
 
     <div class="col">
-        <p> {{ product.product_variant_one }}  / {{ product.product_variant_one }} / {{ product.product_variant_one }}    </p>
+       
+    
+
+      {% for i in product_variant_data %}
+ 
+      
+
+          {% if i.product.title == p.title %}
+
+          {{i.product_variant_one}} / {{i.product_variant_two}} / {{i.product_variant_three}} <br>
+
+          {% else %}
+          
+          {% endif %}
+
+
+      
+      
+      
+      {% endfor %}
+ 
+
+
+
+        {% comment %} <p> {{ product.product_variant_one }}  / {{ product.product_variant_one }} / {{ product.product_variant_one }}    </p> {% endcomment %}
       
     </div>
 
     <div class="col">
-       <p> Price : {{product.price}} </p>     
+
+
+      
+      {% for i in product_variant_data %}
+ 
+      
+
+      {% if i.product.title == p.title %}
+
+
+      Price : {{i.price}} <br>
+      
+      {% endif %}
+      
+      
+      
+      {% endfor %}
+       
       
     </div>
 
     <div class="col">
-        {% if  product.stock > 0 %}
 
-        <p> InStock: {{ product.stock }} </p> 
 
-        {% else %}
+      {% for i in product_variant_data %}
+ 
+      
 
-        <p> Out Of Stock </p>
+      {% if i.product.title == p.title %}
 
-        
-        {% endif %}
+      
+      {% if  i.stock > 0 %}
+
+      <p> InStock: {{ i.stock }} </p> 
+
+      {% else %}
+
+      <p> Out Of Stock </p>
+
+      
+      {% endif %}
+
+
+         
+
+
+      
+      {% endif %}
+      
+      
+      
+      {% endfor %}
+
+
             
       
     </div>
